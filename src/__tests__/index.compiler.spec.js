@@ -1,3 +1,4 @@
+import path from "path";
 import React from "react";
 import ReactDOM from "react-dom";
 import fs from "fs";
@@ -6,7 +7,7 @@ import { compiler } from "../index";
 const root = document.body.appendChild(document.createElement("div"));
 
 function render(jsx) {
-  return ReactDOM.render(jsx, root);
+  ReactDOM.render(jsx, root);
 }
 
 afterEach(() => ReactDOM.unmountComponentAtNode(root));
@@ -33,7 +34,6 @@ it("wraps multiple block element returns in a div to avoid invalid nesting error
   render(compiler("# Boop\n\n## Blep"));
 
   expect(root.innerHTML).toMatchInlineSnapshot(`
-
     <div>
       <h1 id="boop">
         Boop
@@ -42,7 +42,6 @@ it("wraps multiple block element returns in a div to avoid invalid nesting error
         Blep
       </h2>
     </div>
-
   `);
 });
 
@@ -50,7 +49,6 @@ it("wraps solely inline elements in a span, rather than a div", () => {
   render(compiler("Hello. _Beautiful_ day isn't it?"));
 
   expect(root.innerHTML).toMatchInlineSnapshot(`
-
     <span>
       Hello.
       <em>
@@ -58,7 +56,6 @@ it("wraps solely inline elements in a span, rather than a div", () => {
       </em>
       day isn't it?
     </span>
-
   `);
 });
 
@@ -70,7 +67,6 @@ it("#190 perf regression", () => {
   );
 
   expect(root.innerHTML).toMatchInlineSnapshot(`
-
     <span>
       Lorum
       <em>
@@ -97,7 +93,6 @@ it("#190 perf regression", () => {
         </small>
       </a>
     </span>
-
   `);
 });
 
@@ -111,7 +106,6 @@ it("#234 perf regression", () => {
   );
 
   expect(root.innerHTML).toMatchInlineSnapshot(`
-
     <div>
       <br>
       <b>
@@ -205,7 +199,6 @@ it("#234 perf regression", () => {
         30
       </b>
     </div>
-
   `);
 });
 
@@ -214,11 +207,9 @@ describe("inline textual elements", () => {
     render(compiler("*Hello.*"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <em>
         Hello.
       </em>
-
     `);
   });
 
@@ -226,11 +217,9 @@ describe("inline textual elements", () => {
     render(compiler("**Hello.**"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <strong>
         Hello.
       </strong>
-
     `);
   });
 
@@ -238,13 +227,11 @@ describe("inline textual elements", () => {
     render(compiler("***Hello.***"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <strong>
         <em>
           Hello.
         </em>
       </strong>
-
     `);
   });
 
@@ -252,13 +239,11 @@ describe("inline textual elements", () => {
     render(compiler("**_Hello._**"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <strong>
         <em>
           Hello.
         </em>
       </strong>
-
     `);
   });
 
@@ -266,13 +251,11 @@ describe("inline textual elements", () => {
     render(compiler("_**Hello.**_"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <em>
         <strong>
           Hello.
         </strong>
       </em>
-
     `);
   });
 
@@ -280,13 +263,11 @@ describe("inline textual elements", () => {
     render(compiler("___Hello.___"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <strong>
         <em>
           Hello.
         </em>
       </strong>
-
     `);
   });
 
@@ -294,11 +275,9 @@ describe("inline textual elements", () => {
     render(compiler("~~Hello.~~"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <del>
         Hello.
       </del>
-
     `);
   });
 
@@ -306,7 +285,6 @@ describe("inline textual elements", () => {
     render(compiler("~~Foo `~~bar` baz.~~"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <del>
         Foo
         <code>
@@ -314,7 +292,6 @@ describe("inline textual elements", () => {
         </code>
         baz.
       </del>
-
     `);
   });
 
@@ -322,7 +299,6 @@ describe("inline textual elements", () => {
     render(compiler("~~Foo `~~bar` baz.~~\n\nFoo ~~bar~~."));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <div>
         <p>
           <del>
@@ -341,7 +317,6 @@ describe("inline textual elements", () => {
           .
         </p>
       </div>
-
     `);
   });
 
@@ -367,7 +342,6 @@ describe("inline textual elements", () => {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <em>
         This should not misinterpret the asterisk
         <span>
@@ -375,7 +349,6 @@ describe("inline textual elements", () => {
         </span>
         in the HTML.
       </em>
-
     `);
 
     render(
@@ -385,7 +358,6 @@ describe("inline textual elements", () => {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <em>
         This should not misinterpret the asterisk
         <a href="x">
@@ -393,7 +365,6 @@ describe("inline textual elements", () => {
         </a>
         in the anchor text.
       </em>
-
     `);
 
     render(
@@ -403,7 +374,6 @@ describe("inline textual elements", () => {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <em>
         This should not misinterpret the asterisk
         <a href="x*">
@@ -411,7 +381,6 @@ describe("inline textual elements", () => {
         </a>
         in the link href.
       </em>
-
     `);
 
     render(
@@ -421,7 +390,6 @@ describe("inline textual elements", () => {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <em>
         This should not misinterpret the asterisk
         <del>
@@ -429,7 +397,6 @@ describe("inline textual elements", () => {
         </del>
         in the strikethrough.
       </em>
-
     `);
 
     render(
@@ -439,7 +406,6 @@ describe("inline textual elements", () => {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <em>
         This should not misinterpret the asterisk
         <code>
@@ -447,7 +413,6 @@ describe("inline textual elements", () => {
         </code>
         in the backticks.
       </em>
-
     `);
   });
 
@@ -463,13 +428,11 @@ describe("misc block level elements", () => {
     render(compiler("> Something important, perhaps?"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <blockquote>
         <p>
           Something important, perhaps?
         </p>
       </blockquote>
-
     `);
   });
 });
@@ -479,11 +442,9 @@ describe("headings", () => {
     render(compiler("# Hello World"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <h1 id="hello-world">
         Hello World
       </h1>
-
     `);
   });
 
@@ -491,11 +452,9 @@ describe("headings", () => {
     render(compiler("## Hello World"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <h2 id="hello-world">
         Hello World
       </h2>
-
     `);
   });
 
@@ -503,11 +462,9 @@ describe("headings", () => {
     render(compiler("### Hello World"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <h3 id="hello-world">
         Hello World
       </h3>
-
     `);
   });
 
@@ -515,11 +472,9 @@ describe("headings", () => {
     render(compiler("#### Hello World"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <h4 id="hello-world">
         Hello World
       </h4>
-
     `);
   });
 
@@ -527,11 +482,9 @@ describe("headings", () => {
     render(compiler("##### Hello World"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <h5 id="hello-world">
         Hello World
       </h5>
-
     `);
   });
 
@@ -539,11 +492,9 @@ describe("headings", () => {
     render(compiler("###### Hello World"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <h6 id="hello-world">
         Hello World
       </h6>
-
     `);
   });
 
@@ -551,7 +502,6 @@ describe("headings", () => {
     render(compiler("Hello World\n===========\n\nsomething"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <div>
         <h1>
           Hello World
@@ -560,7 +510,6 @@ describe("headings", () => {
           something
         </p>
       </div>
-
     `);
   });
 
@@ -568,7 +517,6 @@ describe("headings", () => {
     render(compiler("Hello World\n-----------\n\nsomething"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <div>
         <h2>
           Hello World
@@ -577,7 +525,6 @@ describe("headings", () => {
           something
         </p>
       </div>
-
     `);
   });
 
@@ -585,7 +532,6 @@ describe("headings", () => {
     render(compiler("# Hello World\n## And again"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <div>
         <h1 id="hello-world">
           Hello World
@@ -594,7 +540,6 @@ describe("headings", () => {
           And again
         </h2>
       </div>
-
     `);
   });
 
@@ -602,11 +547,9 @@ describe("headings", () => {
     render(compiler("# This is~ a very' complicated> header!"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <h1 id="this-is-a-very-complicated-header">
         This is~ a very' complicated&gt; header!
       </h1>
-
     `);
   });
 });
@@ -615,22 +558,16 @@ describe("images", () => {
   it("should handle a basic image", () => {
     render(compiler("![](/xyz.png)"));
 
-    expect(root.innerHTML).toMatchInlineSnapshot(`
-
-      <img src="/xyz.png">
-
-    `);
+    expect(root.innerHTML).toMatchInlineSnapshot(`<img src="/xyz.png">`);
   });
 
   it("should handle an image with alt text", () => {
     render(compiler("![test](/xyz.png)"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <img alt="test"
            src="/xyz.png"
       >
-
     `);
   });
 
@@ -638,12 +575,10 @@ describe("images", () => {
     render(compiler('![test](/xyz.png "foo")'));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <img alt="test"
            title="foo"
            src="/xyz.png"
       >
-
     `);
   });
 
@@ -651,11 +586,9 @@ describe("images", () => {
     render(compiler(["![][1]", "[1]: /xyz.png"].join("\n")));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <p>
         <img src="/xyz.png">
       </p>
-
     `);
   });
 
@@ -663,13 +596,11 @@ describe("images", () => {
     render(compiler(["![test][1]", "[1]: /xyz.png"].join("\n")));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <p>
         <img alt="test"
              src="/xyz.png"
         >
       </p>
-
     `);
   });
 
@@ -677,14 +608,12 @@ describe("images", () => {
     render(compiler(["![test][1]", '[1]: /xyz.png "foo"'].join("\n")));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <p>
         <img alt="test"
              src="/xyz.png"
              title="foo"
         >
       </p>
-
     `);
   });
 });
@@ -694,11 +623,9 @@ describe("links", () => {
     render(compiler("[foo](/xyz.png)"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <a href="/xyz.png">
         foo
       </a>
-
     `);
   });
 
@@ -706,13 +633,11 @@ describe("links", () => {
     render(compiler('[foo](/xyz.png "bar")'));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <a href="/xyz.png"
          title="bar"
       >
         foo
       </a>
-
     `);
   });
 
@@ -720,13 +645,11 @@ describe("links", () => {
     render(compiler(["[foo][1]", "[1]: /xyz.png"].join("\n")));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <p>
         <a href="/xyz.png">
           foo
         </a>
       </p>
-
     `);
   });
 
@@ -734,13 +657,11 @@ describe("links", () => {
     render(compiler(["[foo] [1]", "[1]: /xyz.png"].join("\n")));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <p>
         <a href="/xyz.png">
           foo
         </a>
       </p>
-
     `);
   });
 
@@ -748,7 +669,6 @@ describe("links", () => {
     render(compiler(["[foo][1]", '[1]: /xyz.png "bar"'].join("\n")));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <p>
         <a href="/xyz.png"
            title="bar"
@@ -756,7 +676,6 @@ describe("links", () => {
           foo
         </a>
       </p>
-
     `);
   });
 
@@ -764,11 +683,9 @@ describe("links", () => {
     render(compiler("<https://google.com>"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <a href="https://google.com">
         https://google.com
       </a>
-
     `);
   });
 
@@ -782,7 +699,6 @@ describe("links", () => {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <div>
         <p>
           <strong>
@@ -796,7 +712,6 @@ describe("links", () => {
           </a>
         </p>
       </div>
-
     `);
   });
 
@@ -810,7 +725,6 @@ describe("links", () => {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <div>
         <p>
           <strong>
@@ -824,7 +738,6 @@ describe("links", () => {
           </a>
         </p>
       </div>
-
     `);
   });
 
@@ -832,11 +745,9 @@ describe("links", () => {
     render(compiler("<mailto:probablyup@gmail.com>"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <a href="mailto:probablyup@gmail.com">
         probablyup@gmail.com
       </a>
-
     `);
   });
 
@@ -844,11 +755,9 @@ describe("links", () => {
     render(compiler("<probablyup@gmail.com>"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <a href="mailto:probablyup@gmail.com">
         probablyup@gmail.com
       </a>
-
     `);
   });
 
@@ -856,11 +765,9 @@ describe("links", () => {
     render(compiler("https://google.com"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <a href="https://google.com">
         https://google.com
       </a>
-
     `);
   });
 
@@ -870,11 +777,9 @@ describe("links", () => {
     render(compiler("[foo](javascript:doSomethingBad)"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <a>
         foo
       </a>
-
     `);
 
     expect(console.warn).toHaveBeenCalled();
@@ -886,11 +791,9 @@ describe("links", () => {
     render(compiler("[foo](javascript%3AdoSomethingBad)"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <a>
         foo
       </a>
-
     `);
 
     expect(console.warn).toHaveBeenCalled();
@@ -902,11 +805,9 @@ describe("links", () => {
     render(compiler("[foo](  javascript%3AdoSomethingBad)"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <a>
         foo
       </a>
-
     `);
 
     expect(console.warn).toHaveBeenCalled();
@@ -918,11 +819,9 @@ describe("links", () => {
     render(compiler("[foo](https://google.com/%AF)"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <a>
         foo
       </a>
-
     `);
     expect(console.warn).toHaveBeenCalled();
   });
@@ -933,14 +832,12 @@ describe("links", () => {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <a href="http://www.google.com">
         https://www.google.com
         <em>
           heck yeah
         </em>
       </a>
-
     `);
   });
 
@@ -952,7 +849,6 @@ describe("links", () => {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <em>
         This is emphasized text with
         <a href="https://example.com/asdf_asdf.pdf">
@@ -964,7 +860,6 @@ describe("links", () => {
         </a>
         .
       </em>
-
     `);
   });
 
@@ -976,7 +871,6 @@ describe("links", () => {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <strong>
         This is emphasized text with
         <a href="https://example.com/asdf__asdf.pdf">
@@ -988,7 +882,6 @@ describe("links", () => {
         </a>
         .
       </strong>
-
     `);
   });
 });
@@ -998,7 +891,6 @@ describe("lists", () => {
     render(compiler(["- xyz", "- abc", "- foo"].join("\n")));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <ul>
         <li>
           xyz
@@ -1010,7 +902,6 @@ describe("lists", () => {
           foo
         </li>
       </ul>
-
     `);
   });
 
@@ -1018,7 +909,6 @@ describe("lists", () => {
     render(compiler(["- xyz", "", "- abc", "", "- foo"].join("\n")));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <ul>
         <li>
           <p>
@@ -1036,7 +926,6 @@ describe("lists", () => {
           </p>
         </li>
       </ul>
-
     `);
   });
 
@@ -1044,7 +933,6 @@ describe("lists", () => {
     render(compiler(["1. xyz", "1. abc", "1. foo"].join("\n")));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <ol start="1">
         <li>
           xyz
@@ -1056,7 +944,6 @@ describe("lists", () => {
           foo
         </li>
       </ol>
-
     `);
   });
 
@@ -1064,7 +951,6 @@ describe("lists", () => {
     render(compiler(["2. xyz", "3. abc", "4. foo"].join("\n")));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <ol start="2">
         <li>
           xyz
@@ -1076,7 +962,6 @@ describe("lists", () => {
           foo
         </li>
       </ol>
-
     `);
   });
 
@@ -1084,7 +969,6 @@ describe("lists", () => {
     render(compiler(["- xyz", "  - abc", "- foo"].join("\n")));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <ul>
         <li>
           xyz
@@ -1098,7 +982,6 @@ describe("lists", () => {
           foo
         </li>
       </ul>
-
     `);
   });
 
@@ -1106,7 +989,6 @@ describe("lists", () => {
     render(compiler(["- xyz", "  1. abc", "    - def", "- foo"].join("\n")));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <ul>
         <li>
           xyz
@@ -1125,7 +1007,6 @@ describe("lists", () => {
           foo
         </li>
       </ul>
-
     `);
   });
 
@@ -1135,7 +1016,6 @@ describe("lists", () => {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <ul>
         <li>
           xyz
@@ -1154,7 +1034,6 @@ describe("lists", () => {
           foo
         </li>
       </ul>
-
     `);
   });
 
@@ -1177,7 +1056,6 @@ describe("lists", () => {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <ul>
         <li>
           <a href="#buttermilk">
@@ -1254,7 +1132,6 @@ describe("lists", () => {
           </a>
         </li>
       </ul>
-
     `);
   });
 
@@ -1269,7 +1146,6 @@ describe("lists", () => {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <div>
         <ul>
           <li>
@@ -1281,7 +1157,6 @@ describe("lists", () => {
         </ul>
         <hr>
       </div>
-
     `);
   });
 });
@@ -1293,7 +1168,6 @@ describe("GFM task lists", () => {
     const checkbox = root.querySelector("ul li input");
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <ul>
         <li>
           <input readonly
@@ -1302,7 +1176,6 @@ describe("GFM task lists", () => {
           foo
         </li>
       </ul>
-
     `);
     expect(checkbox.checked).toBe(false);
   });
@@ -1313,7 +1186,6 @@ describe("GFM task lists", () => {
     const checkbox = root.querySelector("ul li input");
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <ul>
         <li>
           <input readonly
@@ -1323,7 +1195,6 @@ describe("GFM task lists", () => {
           foo
         </li>
       </ul>
-
     `);
     expect(checkbox.checked).toBe(true);
   });
@@ -1343,7 +1214,6 @@ describe("GFM tables", () => {
     render(compiler(["foo|bar", "---|---", "1  |2"].join("\n")));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <table>
         <thead>
           <tr>
@@ -1366,7 +1236,6 @@ describe("GFM tables", () => {
           </tr>
         </tbody>
       </table>
-
     `);
   });
 
@@ -1374,7 +1243,6 @@ describe("GFM tables", () => {
     render(compiler(["foo|bar|baz", "--:|:---:|:--", "1|2|3"].join("\n")));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <table>
         <thead>
           <tr>
@@ -1403,7 +1271,6 @@ describe("GFM tables", () => {
           </tr>
         </tbody>
       </table>
-
     `);
   });
 
@@ -1420,7 +1287,6 @@ describe("GFM tables", () => {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <table>
         <thead>
           <tr>
@@ -1451,7 +1317,6 @@ describe("GFM tables", () => {
           </tr>
         </tbody>
       </table>
-
     `);
   });
 
@@ -1468,7 +1333,6 @@ describe("GFM tables", () => {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <table>
         <thead>
           <tr>
@@ -1508,7 +1372,6 @@ describe("GFM tables", () => {
           </tr>
         </tbody>
       </table>
-
     `);
   });
 
@@ -1525,7 +1388,6 @@ describe("GFM tables", () => {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <table>
         <thead>
           <tr>
@@ -1563,7 +1425,6 @@ describe("GFM tables", () => {
           </tr>
         </tbody>
       </table>
-
     `);
   });
 
@@ -1582,7 +1443,6 @@ describe("GFM tables", () => {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <div>
         <table>
           <thead>
@@ -1627,7 +1487,6 @@ describe("GFM tables", () => {
           Foo
         </p>
       </div>
-
     `);
   });
 });
@@ -1637,11 +1496,9 @@ describe("arbitrary HTML", () => {
     render(compiler("<dd>Hello</dd>"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <dd>
         Hello
       </dd>
-
     `);
   });
 
@@ -1649,13 +1506,11 @@ describe("arbitrary HTML", () => {
     render(compiler("<time>**Hello**</time>"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <time>
         <strong>
           Hello
         </strong>
       </time>
-
     `);
   });
 
@@ -1663,7 +1518,6 @@ describe("arbitrary HTML", () => {
     render(compiler("<time><span>**Hello**</span></time>"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <time>
         <span>
           <strong>
@@ -1671,7 +1525,6 @@ describe("arbitrary HTML", () => {
           </strong>
         </span>
       </time>
-
     `);
   });
 
@@ -1681,7 +1534,6 @@ describe("arbitrary HTML", () => {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <dl>
         <dt>
           foo
@@ -1696,7 +1548,6 @@ describe("arbitrary HTML", () => {
           qux
         </dd>
       </dl>
-
     `);
   });
 
@@ -1704,11 +1555,9 @@ describe("arbitrary HTML", () => {
     render(compiler('<time data-foo="bar">Hello</time>'));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <time data-foo="bar">
         Hello
       </time>
-
     `);
   });
 
@@ -1716,11 +1565,9 @@ describe("arbitrary HTML", () => {
     render(compiler('<span tabindex="0">Hello</span>'));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <span tabindex="0">
         Hello
       </span>
-
     `);
   });
 
@@ -1732,11 +1579,9 @@ describe("arbitrary HTML", () => {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <span style="color: red; position: top; margin-right: 10px;">
         Hello
       </span>
-
     `);
   });
 
@@ -1744,13 +1589,11 @@ describe("arbitrary HTML", () => {
     render(compiler("<p>**Hello**</p>"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <p>
         <strong>
           Hello
         </strong>
       </p>
-
     `);
   });
 
@@ -1758,13 +1601,11 @@ describe("arbitrary HTML", () => {
     render(compiler('<div style="float: right">\n# Hello\n</div>'));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <div style="float: right;">
         <h1 id="hello">
           Hello
         </h1>
       </div>
-
     `);
   });
 
@@ -1772,7 +1613,6 @@ describe("arbitrary HTML", () => {
     render(compiler("Text and <code>**code**</code>"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <span>
         Text and
         <code>
@@ -1781,7 +1621,6 @@ describe("arbitrary HTML", () => {
           </strong>
         </code>
       </span>
-
     `);
   });
 
@@ -1793,13 +1632,11 @@ describe("arbitrary HTML", () => {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <a href="https://opencollective.com/react-dropzone/sponsor/0/website"
          target="_blank"
       >
         <img src="https://opencollective.com/react-dropzone/sponsor/0/avatar.svg">
       </a>
-
     `);
   });
 
@@ -1807,11 +1644,9 @@ describe("arbitrary HTML", () => {
     render(compiler("Foo\n<!-- blah -->"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <p>
         Foo
       </p>
-
     `);
   });
 
@@ -1829,7 +1664,6 @@ describe("arbitrary HTML", () => {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <ul id="ProjectSubmenu">
         <li>
           <a href="/projects/markdown/"
@@ -1867,7 +1701,6 @@ describe("arbitrary HTML", () => {
           </a>
         </li>
       </ul>
-
     `);
   });
 
@@ -1878,19 +1711,19 @@ describe("arbitrary HTML", () => {
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
 
-      <svg data-reactroot
-           width="246"
-           height="369"
-           xmlns="http://www.w3.org/2000/svg"
-      >
-        <path d="M243.937.055a2 2 0 0 1 2.008 2.002v168.995c0 1.106-.814 2.388-1.802 2.855l-118.895 56.186c-.996.47-2.617.467-3.605 0L2.748 173.907c-.996-.47-1.803-1.742-1.803-2.855V2.057C.945.951 1.832.055 2.953.055h240.984zM110.391 139.367V66.383l-25.032 47.32h-9.843l-24.891-47.32v72.984h-15.68V42.055h20.18l25.594 49.64 25.804-49.64h19.688v97.312h-15.82zm104.101-48.656c0 9.562-.984 17.484-2.953 23.766-1.969 6.28-4.91 11.261-8.824 14.941-3.914 3.68-8.754 6.258-14.52 7.734-5.765 1.477-12.445 2.215-20.039 2.215h-27.21V42.055h26.929c7.781 0 14.59.82 20.426 2.46 5.836 1.641 10.699 4.36 14.59 8.157 3.89 3.797 6.796 8.8 8.718 15.012 1.922 6.21 2.883 13.886 2.883 23.027zm-18.289-16.508c-1.031-4.312-2.742-7.746-5.133-10.3-2.39-2.555-5.554-4.348-9.492-5.38-3.937-1.03-8.812-1.546-14.625-1.546h-9.21v67.359h9.21c5.906 0 10.828-.55 14.766-1.652 3.937-1.102 7.101-2.954 9.492-5.555 2.39-2.602 4.078-6.07 5.062-10.406.985-4.336 1.477-9.739 1.477-16.207 0-6.563-.516-12-1.547-16.313zM51.219 339.805c0 4.922-.574 9.187-1.723 12.797-1.148 3.609-2.93 6.597-5.344 8.964-2.414 2.368-5.507 4.114-9.28 5.239-3.774 1.125-8.263 1.687-13.466 1.687-1.265 0-2.718-.082-4.36-.246a60.81 60.81 0 0 1-5.097-.738 80.327 80.327 0 0 1-5.238-1.16A49.492 49.492 0 0 1 2 364.906l5.484-14.414c.704.375 1.653.762 2.848 1.16 1.195.399 2.45.762 3.762 1.09a56.72 56.72 0 0 0 3.972.844c1.336.234 2.496.351 3.48.351 2.673 0 4.864-.316 6.575-.949 1.711-.633 3.07-1.699 4.078-3.199 1.008-1.5 1.7-3.492 2.074-5.976.375-2.485.563-5.602.563-9.352V269h16.383v70.805zM151.688 339c0 5.484-.973 10.09-2.918 13.816-1.946 3.727-4.582 6.75-7.91 9.07-3.329 2.321-7.208 3.985-11.637 4.993-4.43 1.008-9.13 1.512-14.098 1.512-5.25 0-9.844-.493-13.781-1.477-3.938-.984-7.383-2.32-10.336-4.008-2.953-1.687-5.473-3.656-7.559-5.906A43.715 43.715 0 0 1 78 349.758l12.938-9.352a42.058 42.058 0 0 0 3.902 5.168 23.723 23.723 0 0 0 4.992 4.254c1.898 1.219 4.113 2.192 6.645 2.918 2.53.727 5.46 1.09 8.789 1.09 2.484 0 4.91-.234 7.277-.703s4.465-1.242 6.293-2.32c1.828-1.079 3.293-2.485 4.394-4.22 1.102-1.734 1.653-3.89 1.653-6.468 0-2.438-.528-4.477-1.582-6.117-1.055-1.64-2.473-3.024-4.254-4.149-1.781-1.125-3.867-2.062-6.258-2.812-2.39-.75-4.945-1.477-7.664-2.18a266.328 266.328 0 0 1-13.852-3.902c-4.265-1.336-7.968-3.035-11.109-5.098-3.14-2.062-5.613-4.687-7.418-7.875-1.805-3.187-2.707-7.265-2.707-12.234 0-4.406.75-8.38 2.25-11.918a24.403 24.403 0 0 1 6.61-9.07c2.906-2.508 6.527-4.43 10.863-5.766 4.336-1.336 9.316-2.004 14.941-2.004 4.219 0 8.074.387 11.567 1.16 3.492.774 6.656 1.899 9.492 3.375a32.403 32.403 0 0 1 7.629 5.485 37.377 37.377 0 0 1 5.906 7.418l-12.727 9.492c-2.578-4.125-5.625-7.22-9.14-9.282-3.516-2.062-7.805-3.093-12.868-3.093-5.484 0-9.832 1.125-13.042 3.375-3.211 2.25-4.817 5.437-4.817 9.562 0 2.063.434 3.785 1.3 5.168.868 1.383 2.204 2.59 4.009 3.621 1.804 1.032 4.078 1.957 6.82 2.778 2.742.82 5.988 1.675 9.738 2.566a193.01 193.01 0 0 1 8.473 2.25 67.888 67.888 0 0 1 7.805 2.777 38.465 38.465 0 0 1 6.785 3.727 22.237 22.237 0 0 1 5.308 5.168c1.477 2.016 2.637 4.371 3.48 7.066.845 2.696 1.267 5.824 1.267 9.387zM164 367.313l31.992-48.797L164.844 270h18.914l21.586 35.648L227.633 270h18.281l-31.5 48.094 31.36 49.219H227.07l-22.289-36.282-22.64 36.281z"
-              fill="#444"
-              fill-rule="evenodd"
-        >
-        </path>
-      </svg>
+            <svg data-reactroot
+                 width="246"
+                 height="369"
+                 xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M243.937.055a2 2 0 0 1 2.008 2.002v168.995c0 1.106-.814 2.388-1.802 2.855l-118.895 56.186c-.996.47-2.617.467-3.605 0L2.748 173.907c-.996-.47-1.803-1.742-1.803-2.855V2.057C.945.951 1.832.055 2.953.055h240.984zM110.391 139.367V66.383l-25.032 47.32h-9.843l-24.891-47.32v72.984h-15.68V42.055h20.18l25.594 49.64 25.804-49.64h19.688v97.312h-15.82zm104.101-48.656c0 9.562-.984 17.484-2.953 23.766-1.969 6.28-4.91 11.261-8.824 14.941-3.914 3.68-8.754 6.258-14.52 7.734-5.765 1.477-12.445 2.215-20.039 2.215h-27.21V42.055h26.929c7.781 0 14.59.82 20.426 2.46 5.836 1.641 10.699 4.36 14.59 8.157 3.89 3.797 6.796 8.8 8.718 15.012 1.922 6.21 2.883 13.886 2.883 23.027zm-18.289-16.508c-1.031-4.312-2.742-7.746-5.133-10.3-2.39-2.555-5.554-4.348-9.492-5.38-3.937-1.03-8.812-1.546-14.625-1.546h-9.21v67.359h9.21c5.906 0 10.828-.55 14.766-1.652 3.937-1.102 7.101-2.954 9.492-5.555 2.39-2.602 4.078-6.07 5.062-10.406.985-4.336 1.477-9.739 1.477-16.207 0-6.563-.516-12-1.547-16.313zM51.219 339.805c0 4.922-.574 9.187-1.723 12.797-1.148 3.609-2.93 6.597-5.344 8.964-2.414 2.368-5.507 4.114-9.28 5.239-3.774 1.125-8.263 1.687-13.466 1.687-1.265 0-2.718-.082-4.36-.246a60.81 60.81 0 0 1-5.097-.738 80.327 80.327 0 0 1-5.238-1.16A49.492 49.492 0 0 1 2 364.906l5.484-14.414c.704.375 1.653.762 2.848 1.16 1.195.399 2.45.762 3.762 1.09a56.72 56.72 0 0 0 3.972.844c1.336.234 2.496.351 3.48.351 2.673 0 4.864-.316 6.575-.949 1.711-.633 3.07-1.699 4.078-3.199 1.008-1.5 1.7-3.492 2.074-5.976.375-2.485.563-5.602.563-9.352V269h16.383v70.805zM151.688 339c0 5.484-.973 10.09-2.918 13.816-1.946 3.727-4.582 6.75-7.91 9.07-3.329 2.321-7.208 3.985-11.637 4.993-4.43 1.008-9.13 1.512-14.098 1.512-5.25 0-9.844-.493-13.781-1.477-3.938-.984-7.383-2.32-10.336-4.008-2.953-1.687-5.473-3.656-7.559-5.906A43.715 43.715 0 0 1 78 349.758l12.938-9.352a42.058 42.058 0 0 0 3.902 5.168 23.723 23.723 0 0 0 4.992 4.254c1.898 1.219 4.113 2.192 6.645 2.918 2.53.727 5.46 1.09 8.789 1.09 2.484 0 4.91-.234 7.277-.703s4.465-1.242 6.293-2.32c1.828-1.079 3.293-2.485 4.394-4.22 1.102-1.734 1.653-3.89 1.653-6.468 0-2.438-.528-4.477-1.582-6.117-1.055-1.64-2.473-3.024-4.254-4.149-1.781-1.125-3.867-2.062-6.258-2.812-2.39-.75-4.945-1.477-7.664-2.18a266.328 266.328 0 0 1-13.852-3.902c-4.265-1.336-7.968-3.035-11.109-5.098-3.14-2.062-5.613-4.687-7.418-7.875-1.805-3.187-2.707-7.265-2.707-12.234 0-4.406.75-8.38 2.25-11.918a24.403 24.403 0 0 1 6.61-9.07c2.906-2.508 6.527-4.43 10.863-5.766 4.336-1.336 9.316-2.004 14.941-2.004 4.219 0 8.074.387 11.567 1.16 3.492.774 6.656 1.899 9.492 3.375a32.403 32.403 0 0 1 7.629 5.485 37.377 37.377 0 0 1 5.906 7.418l-12.727 9.492c-2.578-4.125-5.625-7.22-9.14-9.282-3.516-2.062-7.805-3.093-12.868-3.093-5.484 0-9.832 1.125-13.042 3.375-3.211 2.25-4.817 5.437-4.817 9.562 0 2.063.434 3.785 1.3 5.168.868 1.383 2.204 2.59 4.009 3.621 1.804 1.032 4.078 1.957 6.82 2.778 2.742.82 5.988 1.675 9.738 2.566a193.01 193.01 0 0 1 8.473 2.25 67.888 67.888 0 0 1 7.805 2.777 38.465 38.465 0 0 1 6.785 3.727 22.237 22.237 0 0 1 5.308 5.168c1.477 2.016 2.637 4.371 3.48 7.066.845 2.696 1.267 5.824 1.267 9.387zM164 367.313l31.992-48.797L164.844 270h18.914l21.586 35.648L227.633 270h18.281l-31.5 48.094 31.36 49.219H227.07l-22.289-36.282-22.64 36.281z"
+                    fill="#444"
+                    fill-rule="evenodd"
+              >
+              </path>
+            </svg>
 
-    `);
+        `);
   });
 
   it("handles nested HTML blocks of the same type (regression)", () => {
@@ -1923,7 +1756,6 @@ describe("arbitrary HTML", () => {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <table>
         <tbody>
           <tr>
@@ -1959,7 +1791,6 @@ describe("arbitrary HTML", () => {
           </tr>
         </tbody>
       </table>
-
     `);
   });
 
@@ -1983,7 +1814,6 @@ $25
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <p>
         $25
         <br>
@@ -2002,7 +1832,6 @@ $25
         <br>
         <br>
       </p>
-
     `);
   });
 
@@ -2042,7 +1871,6 @@ $25
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <table>
         <tbody>
           <tr>
@@ -2090,7 +1918,6 @@ $25
           </tr>
         </tbody>
       </table>
-
     `);
   });
 
@@ -2112,10 +1939,8 @@ $25
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <div class="datepicker">
       </div>
-
     `);
   });
 
@@ -2141,11 +1966,9 @@ $25
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <div>
         1514579720511 to "1514579720512"
       </div>
-
     `);
   });
 
@@ -2186,7 +2009,6 @@ $25
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <div>
         <div class="inner">
           bah
@@ -2204,7 +2026,6 @@ $25
         <div class="inner">
         </div>
       </div>
-
     `);
   });
 
@@ -2222,7 +2043,6 @@ $25
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <div>
         <g>
         </g>
@@ -2233,7 +2053,6 @@ $25
         <path fill="#ffffff">
         </path>
       </div>
-
     `);
   });
 
@@ -2249,14 +2068,12 @@ $25
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <div class="foo"
            style="background: red;"
            id="baz"
       >
         Bar
       </div>
-
     `);
   });
 
@@ -2264,7 +2081,6 @@ $25
     render(compiler(['"<span>#</span>"'].join("\n")));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <span>
         "
         <span>
@@ -2272,7 +2088,6 @@ $25
         </span>
         "
       </span>
-
     `);
   });
 
@@ -2280,7 +2095,6 @@ $25
     render(compiler(['"<span># foo</span>"'].join("\n")));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <span>
         "
         <span>
@@ -2290,7 +2104,6 @@ $25
         </span>
         "
       </span>
-
     `);
   });
 
@@ -2302,13 +2115,11 @@ $25
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <style>
         .bar {
           color: red;
         }
       </style>
-
     `);
   });
 
@@ -2316,11 +2127,9 @@ $25
     render(compiler(["<script>", "  new Date();", "</script>"].join("\n")));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <script>
         new Date();
       </script>
-
     `);
   });
 
@@ -2332,13 +2141,11 @@ $25
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <div id="foo">
         <div id="bar">
           Baz
         </div>
       </div>
-
     `);
   });
 
@@ -2361,14 +2168,12 @@ $25
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <figure>
         <img src="//placehold.it/300x200">
         <figcaption>
           This is a placeholder image
         </figcaption>
       </figure>
-
     `);
   });
 
@@ -2388,7 +2193,6 @@ import styled from 'styled-components';
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <details>
         <summary>
           Solution
@@ -2399,7 +2203,6 @@ import styled from 'styled-components';
           </code>
         </pre>
       </details>
-
     `);
   });
 
@@ -2419,7 +2222,6 @@ import styled from 'styled-components';
 
     // expect('').toMatchInlineSnapshot();
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <details>
         <summary>
           Click here
@@ -2447,7 +2249,6 @@ import styled from 'styled-components';
           </tbody>
         </table>
       </details>
-
     `);
   });
 
@@ -2475,7 +2276,6 @@ Text content
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <details>
         <summary>
           View collapsed content
@@ -2501,7 +2301,6 @@ Text content
           </li>
         </ul>
       </details>
-
     `);
   });
 
@@ -2519,7 +2318,6 @@ fun main() {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <div>
         <pre>
           <code class="lang-kotlin">
@@ -2529,7 +2327,6 @@ fun main() {
           </code>
         </pre>
       </div>
-
     `);
   });
 
@@ -2545,7 +2342,6 @@ fun main() {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <div>
         <ul>
           <li>
@@ -2561,7 +2357,6 @@ fun main() {
           </li>
         </ul>
       </div>
-
     `);
   });
 
@@ -2569,7 +2364,6 @@ fun main() {
     render(compiler(["<div>", "Hello", "", "World", "</div>"].join("\n")));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <div>
         <p>
           Hello
@@ -2578,7 +2372,6 @@ fun main() {
           World
         </p>
       </div>
-
     `);
   });
 
@@ -2588,14 +2381,12 @@ fun main() {
     render(compiler("<Foo/> World!", { overrides: { Foo } }));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <span>
         <span>
           Hello
         </span>
         World!
       </span>
-
     `);
   });
 });
@@ -2615,7 +2406,6 @@ describe("horizontal rules", () => {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <div>
         <hr>
         <hr>
@@ -2623,7 +2413,6 @@ describe("horizontal rules", () => {
         <hr>
         <hr>
       </div>
-
     `);
   });
 });
@@ -2643,13 +2432,11 @@ describe("fenced code blocks", () => {
     render(compiler(["```js", "foo", "```"].join("\n")));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <pre>
         <code class="lang-js">
           foo
         </code>
       </pre>
-
     `);
   });
 });
@@ -2659,13 +2446,11 @@ describe("indented code blocks", () => {
     render(compiler("    foo\n\n"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <pre>
         <code>
           foo
         </code>
       </pre>
-
     `);
   });
 });
@@ -2675,11 +2460,9 @@ describe("inline code blocks", () => {
     render(compiler("`foo`"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <code>
         foo
       </code>
-
     `);
   });
 });
@@ -2689,7 +2472,6 @@ describe("footnotes", () => {
     render(compiler(["foo[^abc] bar", "", "[^abc]: Baz baz"].join("\n")));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <div>
         <p>
           foo
@@ -2706,7 +2488,6 @@ describe("footnotes", () => {
           </div>
         </footer>
       </div>
-
     `);
   });
 
@@ -2714,7 +2495,6 @@ describe("footnotes", () => {
     render(compiler(["foo[^abc] bar", "", "[^abc]: Baz baz"].join("\n")));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <div>
         <p>
           foo
@@ -2731,7 +2511,6 @@ describe("footnotes", () => {
           </div>
         </footer>
       </div>
-
     `);
   });
 
@@ -2739,7 +2518,6 @@ describe("footnotes", () => {
     render(compiler(["foo[^abc] bar", "", "[^abc]: Baz"].join("\n")));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <div>
         <p>
           foo
@@ -2756,18 +2534,15 @@ describe("footnotes", () => {
           </div>
         </footer>
       </div>
-
     `);
   });
 
   it("should not blow up if footnote syntax is seen but no matching footnote was found", () => {
     expect(() => render(compiler("[one] [two]"))).not.toThrow();
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <span>
         [one] [two]
       </span>
-
     `);
   });
 });
@@ -2781,7 +2556,6 @@ describe("options.forceBlock", () => {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <p>
         Hello.
         <em>
@@ -2789,7 +2563,6 @@ describe("options.forceBlock", () => {
         </em>
         day isn't it?
       </p>
-
     `);
   });
 });
@@ -2846,11 +2619,9 @@ describe("options.slugify", () => {
     render(compiler("# 中文", { slugify: str => str }));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <h1 id="中文">
         中文
       </h1>
-
     `);
   });
 
@@ -2858,11 +2629,9 @@ describe("options.slugify", () => {
     render(compiler("# 中文"));
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <h1 id>
         中文
       </h1>
-
     `);
   });
 
@@ -2953,13 +2722,11 @@ describe("overrides", () => {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <pre class="abc">
         <code data-foo="bar">
           foo
         </code>
       </pre>
-
     `);
   });
 
@@ -3009,7 +2776,6 @@ describe("overrides", () => {
     );
 
     expect(root.innerHTML).toMatchInlineSnapshot(`
-
       <pre class="abc"
            data-bar="baz"
       >
@@ -3019,7 +2785,6 @@ describe("overrides", () => {
           foo
         </code>
       </pre>
-
     `);
   });
 
@@ -3032,14 +2797,12 @@ describe("overrides", () => {
     const $element = root.querySelector("li");
 
     expect($element.outerHTML).toMatchInlineSnapshot(`
-
       <li class="foo">
         <input readonly
                type="checkbox"
         >
         foo
       </li>
-
     `);
   });
 
@@ -3052,18 +2815,19 @@ describe("overrides", () => {
     const $element = root.querySelector("input");
 
     expect($element.outerHTML).toMatchInlineSnapshot(`
-
       <input readonly
              type="checkbox"
              class="foo"
       >
-
     `);
   });
 });
 
 it("handles a holistic example", () => {
-  const md = fs.readFileSync(__dirname + "/fixture.md", "utf8");
+  const md = fs.readFileSync(
+    path.join(__dirname, "../../benchmarking/fixture.md"),
+    "utf8"
+  );
   render(compiler(md));
 
   expect(root.innerHTML).toMatchSnapshot();
