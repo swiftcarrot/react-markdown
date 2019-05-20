@@ -50,7 +50,7 @@ const ATTRIBUTE_TO_JSX_PROP_MAP = {
   srclang: 'srcLang',
   srcset: 'srcSet',
   tabindex: 'tabIndex',
-  usemap: 'useMap',
+  usemap: 'useMap'
 };
 
 const namedCodesToUnicode = {
@@ -59,7 +59,7 @@ const namedCodesToUnicode = {
   gt: '\u003e',
   lt: '\u003c',
   nbsp: '\u00a0',
-  quot: '\u201c',
+  quot: '\u201c'
 };
 
 const DO_NOT_PROCESS_HTML_ELEMENTS = ['style', 'script'];
@@ -250,7 +250,7 @@ const BLOCK_SYNTAXES = [
   LIST_ITEM_R,
   LIST_R,
   NP_TABLE_R,
-  PARAGRAPH_R,
+  PARAGRAPH_R
 ];
 
 function containsBlockSyntax(input) {
@@ -308,9 +308,7 @@ function parseTableAlign(capture /*, parse, state*/) {
 }
 
 function parseTableCells(capture, parse, state) {
-  const rowsText = capture[3]
-    .trim()
-    .split('\n');
+  const rowsText = capture[3].trim().split('\n');
 
   return rowsText.map(function(rowText) {
     return rowText
@@ -333,7 +331,7 @@ function parseTable(capture, parse, state) {
     align: align,
     cells: cells,
     header: header,
-    type: 'table',
+    type: 'table'
   };
 }
 
@@ -341,7 +339,7 @@ function getTableStyle(node, colIndex) {
   return node.align[colIndex] == null
     ? {}
     : {
-        textAlign: node.align[colIndex],
+        textAlign: node.align[colIndex]
       };
 }
 
@@ -641,7 +639,7 @@ function parseBlock(parse, content, state) {
 
 function parseCaptureInline(capture, parse, state) {
   return {
-    content: parseInline(parse, capture[1], state),
+    content: parseInline(parse, capture[1], state)
   };
 }
 
@@ -682,7 +680,8 @@ function getTag(tag, overrides) {
 
   if (!override) return tag;
 
-  return typeof override === 'function' || (typeof override === 'object' && 'render' in override)
+  return typeof override === 'function' ||
+    (typeof override === 'object' && 'render' in override)
     ? override
     : get(overrides, `${tag}.component`, tag);
 }
@@ -729,7 +728,7 @@ export function compiler(markdown, options) {
         ...props,
         ...overrideProps,
         className:
-          cx(props && props.className, overrideProps.className) || undefined,
+          cx(props && props.className, overrideProps.className) || undefined
       },
       ...children
     );
@@ -759,17 +758,15 @@ export function compiler(markdown, options) {
 
     let jsx;
     if (arr.length > 1) {
-      jsx = inline ? <span key="outer">{arr}</span> : <div key="outer">{arr}</div>;
+      jsx = inline ? (
+        <span key="outer">{arr}</span>
+      ) : (
+        <div key="outer">{arr}</div>
+      );
     } else if (arr.length === 1) {
       jsx = arr[0];
-
-      // TODO: remove this for React 16
-      if (typeof jsx === 'string') {
-        jsx = <span key="outer">{jsx}</span>;
-      }
     } else {
-      // TODO: return null for React 16
-      jsx = <span key="outer" />;
+      return null;
     }
 
     return jsx;
@@ -848,14 +845,14 @@ export function compiler(markdown, options) {
           content: parse(
             capture[0].replace(BLOCKQUOTE_TRIM_LEFT_MULTILINE_R, ''),
             state
-          ),
+          )
         };
       },
       react(node, output, state) {
         return (
           <blockquote key={state.key}>{output(node.content, state)}</blockquote>
         );
-      },
+      }
     },
 
     breakLine: {
@@ -864,7 +861,7 @@ export function compiler(markdown, options) {
       parse: captureNothing,
       react(_, __, state) {
         return <br key={state.key} />;
-      },
+      }
     },
 
     breakThematic: {
@@ -873,7 +870,7 @@ export function compiler(markdown, options) {
       parse: captureNothing,
       react(_, __, state) {
         return <hr key={state.key} />;
-      },
+      }
     },
 
     codeBlock: {
@@ -883,7 +880,7 @@ export function compiler(markdown, options) {
         let content = capture[0].replace(/^ {4}/gm, '').replace(/\n+$/, '');
         return {
           content: content,
-          lang: undefined,
+          lang: undefined
         };
       },
 
@@ -895,7 +892,7 @@ export function compiler(markdown, options) {
             </code>
           </pre>
         );
-      },
+      }
     },
 
     codeFenced: {
@@ -905,9 +902,9 @@ export function compiler(markdown, options) {
         return {
           content: capture[3],
           lang: capture[2] || undefined,
-          type: 'codeBlock',
+          type: 'codeBlock'
         };
-      },
+      }
     },
 
     codeInline: {
@@ -915,12 +912,12 @@ export function compiler(markdown, options) {
       order: PARSE_PRIORITY_LOW,
       parse(capture /*, parse, state*/) {
         return {
-          content: capture[2],
+          content: capture[2]
         };
       },
       react(node, output, state) {
         return <code key={state.key}>{node.content}</code>;
-      },
+      }
     },
 
     /**
@@ -932,12 +929,12 @@ export function compiler(markdown, options) {
       parse(capture /*, parse, state*/) {
         footnotes.push({
           footnote: capture[2],
-          identifier: capture[1],
+          identifier: capture[1]
         });
 
         return {};
       },
-      react: renderNothing,
+      react: renderNothing
     },
 
     footnoteReference: {
@@ -946,7 +943,7 @@ export function compiler(markdown, options) {
       parse(capture /*, parse*/) {
         return {
           content: capture[1],
-          target: `#${capture[1]}`,
+          target: `#${capture[1]}`
         };
       },
       react(node, output, state) {
@@ -955,7 +952,7 @@ export function compiler(markdown, options) {
             <sup key={state.key}>{node.content}</sup>
           </a>
         );
-      },
+      }
     },
 
     gfmTask: {
@@ -963,7 +960,7 @@ export function compiler(markdown, options) {
       order: PARSE_PRIORITY_HIGH,
       parse(capture /*, parse, state*/) {
         return {
-          completed: capture[1].toLowerCase() === 'x',
+          completed: capture[1].toLowerCase() === 'x'
         };
       },
       react(node, output, state) {
@@ -975,7 +972,7 @@ export function compiler(markdown, options) {
             type="checkbox"
           />
         );
-      },
+      }
     },
 
     heading: {
@@ -985,7 +982,7 @@ export function compiler(markdown, options) {
         return {
           content: parseInline(parse, capture[2], state),
           id: options.slugify(capture[2]),
-          level: capture[1].length,
+          level: capture[1].length
         };
       },
       react(node, output, state) {
@@ -995,7 +992,7 @@ export function compiler(markdown, options) {
             {output(node.content, state)}
           </Tag>
         );
-      },
+      }
     },
 
     headingSetext: {
@@ -1005,9 +1002,9 @@ export function compiler(markdown, options) {
         return {
           content: parseInline(parse, capture[1], state),
           level: capture[2] === '=' ? 1 : 2,
-          type: 'heading',
+          type: 'heading'
         };
-      },
+      }
     },
 
     htmlBlock: {
@@ -1038,7 +1035,7 @@ export function compiler(markdown, options) {
 
           noInnerParse,
 
-          tag: capture[1],
+          tag: capture[1]
         };
       },
       react(node, output, state) {
@@ -1047,7 +1044,7 @@ export function compiler(markdown, options) {
             {node.noInnerParse ? node.content : output(node.content, state)}
           </node.tag>
         );
-      },
+      }
     },
 
     htmlComment: {
@@ -1056,7 +1053,7 @@ export function compiler(markdown, options) {
       parse() {
         return {};
       },
-      react: renderNothing,
+      react: renderNothing
     },
 
     htmlSelfClosing: {
@@ -1068,12 +1065,12 @@ export function compiler(markdown, options) {
       parse(capture /*, parse, state*/) {
         return {
           attrs: attrStringToMap(capture[2] || ''),
-          tag: capture[1],
+          tag: capture[1]
         };
       },
       react(node, output, state) {
         return <node.tag {...node.attrs} key={state.key} />;
-      },
+      }
     },
 
     image: {
@@ -1083,7 +1080,7 @@ export function compiler(markdown, options) {
         return {
           alt: capture[1],
           target: unescapeUrl(capture[2]),
-          title: capture[3],
+          title: capture[3]
         };
       },
       react(node, output, state) {
@@ -1095,7 +1092,7 @@ export function compiler(markdown, options) {
             src={sanitizeUrl(node.target)}
           />
         );
-      },
+      }
     },
 
     link: {
@@ -1105,7 +1102,7 @@ export function compiler(markdown, options) {
         return {
           content: parseSimpleInline(parse, capture[1], state),
           target: unescapeUrl(capture[2]),
-          title: capture[3],
+          title: capture[3]
         };
       },
       react(node, output, state) {
@@ -1114,7 +1111,7 @@ export function compiler(markdown, options) {
             {output(node.content, state)}
           </a>
         );
-      },
+      }
     },
 
     // https://daringfireball.net/projects/markdown/syntax#autolink
@@ -1126,13 +1123,13 @@ export function compiler(markdown, options) {
           content: [
             {
               content: capture[1],
-              type: 'text',
-            },
+              type: 'text'
+            }
           ],
           target: capture[1],
-          type: 'link',
+          type: 'link'
         };
-      },
+      }
     },
 
     linkBareUrlDetector: {
@@ -1143,14 +1140,14 @@ export function compiler(markdown, options) {
           content: [
             {
               content: capture[1],
-              type: 'text',
-            },
+              type: 'text'
+            }
           ],
           target: capture[1],
           title: undefined,
-          type: 'link',
+          type: 'link'
         };
-      },
+      }
     },
 
     linkMailtoDetector: {
@@ -1169,13 +1166,13 @@ export function compiler(markdown, options) {
           content: [
             {
               content: address.replace('mailto:', ''),
-              type: 'text',
-            },
+              type: 'text'
+            }
           ],
           target: target,
-          type: 'link',
+          type: 'link'
         };
-      },
+      }
     },
 
     list: {
@@ -1276,7 +1273,7 @@ export function compiler(markdown, options) {
         return {
           items: itemContent,
           ordered: ordered,
-          start: start,
+          start: start
         };
       },
       react(node, output, state) {
@@ -1289,7 +1286,7 @@ export function compiler(markdown, options) {
             })}
           </Tag>
         );
-      },
+      }
     },
 
     newlineCoalescer: {
@@ -1298,7 +1295,7 @@ export function compiler(markdown, options) {
       parse: captureNothing,
       react(/*node, output, state*/) {
         return '\n';
-      },
+      }
     },
 
     paragraph: {
@@ -1307,7 +1304,7 @@ export function compiler(markdown, options) {
       parse: parseCaptureInline,
       react(node, output, state) {
         return <p key={state.key}>{output(node.content, state)}</p>;
-      },
+      }
     },
 
     ref: {
@@ -1316,12 +1313,12 @@ export function compiler(markdown, options) {
       parse(capture /*, parse*/) {
         refs[capture[1]] = {
           target: capture[2],
-          title: capture[4],
+          title: capture[4]
         };
 
         return {};
       },
-      react: renderNothing,
+      react: renderNothing
     },
 
     refImage: {
@@ -1330,7 +1327,7 @@ export function compiler(markdown, options) {
       parse(capture) {
         return {
           alt: capture[1] || undefined,
-          ref: capture[2],
+          ref: capture[2]
         };
       },
       react(node, output, state) {
@@ -1342,7 +1339,7 @@ export function compiler(markdown, options) {
             title={refs[node.ref].title}
           />
         );
-      },
+      }
     },
 
     refLink: {
@@ -1351,8 +1348,11 @@ export function compiler(markdown, options) {
       parse(capture, parse, state) {
         return {
           content: parse(capture[1], state),
-          fallbackContent: parse(capture[0].replace(SQUARE_BRACKETS_R, '\\$1'), state),
-          ref: capture[2],
+          fallbackContent: parse(
+            capture[0].replace(SQUARE_BRACKETS_R, '\\$1'),
+            state
+          ),
+          ref: capture[2]
         };
       },
       react(node, output, state) {
@@ -1364,8 +1364,10 @@ export function compiler(markdown, options) {
           >
             {output(node.content, state)}
           </a>
-        ) : <span key={state.key}>{output(node.fallbackContent, state)}</span>;
-      },
+        ) : (
+          <span key={state.key}>{output(node.fallbackContent, state)}</span>
+        );
+      }
     },
 
     table: {
@@ -1404,7 +1406,7 @@ export function compiler(markdown, options) {
             </tbody>
           </table>
         );
-      },
+      }
     },
 
     text: {
@@ -1422,12 +1424,12 @@ export function compiler(markdown, options) {
               return namedCodesToUnicode[inner]
                 ? namedCodesToUnicode[inner]
                 : full;
-            }),
+            })
         };
       },
       react(node /*, output, state*/) {
         return node.content;
-      },
+      }
     },
 
     textBolded: {
@@ -1437,12 +1439,12 @@ export function compiler(markdown, options) {
         return {
           // capture[1] -> the syntax control character
           // capture[2] -> inner content
-          content: parse(capture[2], state),
+          content: parse(capture[2], state)
         };
       },
       react(node, output, state) {
         return <strong key={state.key}>{output(node.content, state)}</strong>;
-      },
+      }
     },
 
     textEmphasized: {
@@ -1452,12 +1454,12 @@ export function compiler(markdown, options) {
         return {
           // capture[1] -> opening * or _
           // capture[2] -> inner content
-          content: parse(capture[2], state),
+          content: parse(capture[2], state)
         };
       },
       react(node, output, state) {
         return <em key={state.key}>{output(node.content, state)}</em>;
-      },
+      }
     },
 
     textEscaped: {
@@ -1470,9 +1472,9 @@ export function compiler(markdown, options) {
       parse(capture /*, parse, state*/) {
         return {
           content: capture[1],
-          type: 'text',
+          type: 'text'
         };
-      },
+      }
     },
 
     textStrikethroughed: {
@@ -1481,8 +1483,8 @@ export function compiler(markdown, options) {
       parse: parseCaptureInline,
       react(node, output, state) {
         return <del key={state.key}>{output(node.content, state)}</del>;
-      },
-    },
+      }
+    }
   };
 
   // Object.keys(rules).forEach(key => {
@@ -1559,6 +1561,6 @@ if (process.env.NODE_ENV !== 'production') {
 
   Markdown.propTypes = {
     children: PropTypes.string.isRequired,
-    options: PropTypes.object,
+    options: PropTypes.object
   };
 }
